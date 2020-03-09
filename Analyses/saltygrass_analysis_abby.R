@@ -8,12 +8,14 @@
 ## load packages
 ### install.packages('stringr')
 library(stringr)
+library(lme4)
+library(car)
+library(emmeans)
 
 ## load data
 cn_data_raw = read.csv('../Data/saltygrass_cn.csv')
 height_data_raw = read.csv('../Data/Finalized_Height_Data_Linear.csv')
-mass_data_raw = read.csv("Mass_Measurements.csv")
-
+mass_data_raw = read.csv("../Data/Mass_Measurements.csv")
 
 ## curate the CN data
 ### remove the QC values
@@ -49,7 +51,7 @@ cn_data = cn_data_noQC
 sample_id_list_height = strsplit(as.character(height_data_raw$Sample), "[.]")
 height_data_raw$treatment = unlist(lapply(sample_id_list_height, `[[`, 2))
 height_data_raw$rep = unlist(lapply(sample_id_list_height, `[[`, 3))
-height_data_raw_sample_block =strsplit(height_data_raw_sample_block, 
+height_data_raw_sample_block =strsplit(unlist(lapply(sample_id_list_height, `[[`, 1)), 
                                        "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=TRUE)
 height_data_raw$block = unlist(lapply(height_data_raw_sample_block, '[[', 2))
 height_data_raw$species = unlist(lapply(height_data_raw_sample_block, '[[', 1))
@@ -68,9 +70,33 @@ mass_data = mass_data_raw
 
 ## hypothesis testing
 
-### Does salinity affect protein nitrogen concentration and does this vary by species?
+### Does salinity affect nitrogen concentration and does this vary by species?
+### Increasing salinity will reduce nitrogen concentration becuase XXXXXXXX
 
+#### take a look at the top 6 rows
+### head(cn_data)
 
+#### see what class each variable is
+class(cn_data$species)
+class(cn_data$treatment)
+class(cn_data$organ)
+class(cn_data$block)
+class(cn_data$nitrogen_percent)
+
+#### define independent variables as correct class
+cn_data$species_factor = as.factor(cn_data$species)
+cn_data$treatment_factor = as.factor(cn_data$treatment)
+cn_data$organ_factor = as.factor(cn_data$organ)
+cn_data$block_factor = as.factor(cn_data$block)
+
+#### define the mixed effects model
+percent_nitrogen_lmer = lmer(nitrogen_percent ~ treatment * species * organ + (1|block), 
+                             data = cn_data)
+summary(percent_nitrogen_lmer)
+Anova(percent_nitrogen_lmer)
+cld(emmeans(percent_nitrogen_lmer, ~treatment))
+cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
+cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
 ## make plots
 
