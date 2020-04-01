@@ -100,7 +100,7 @@ cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 cn_data$cn = cn_data$carbon_weight / cn_data$nitrogen_weight
 
 #### define the mixed effects model
-percent_nitrogen_lmer = lmer(cn ~ treatment * species * organ + (1|block), 
+percent_nitrogen_lmer = lmer(log(cn) ~ treatment * species * organ + (1|block), 
                              data = cn_data) # fit the model
 plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
 summary(percent_nitrogen_lmer) # look at slope coefficients
