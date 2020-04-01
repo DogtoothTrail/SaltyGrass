@@ -98,6 +98,56 @@ cld(emmeans(percent_nitrogen_lmer, ~treatment))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
 cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
+
+### head(mass_data)
+#### see what class each variable is
+class(mass_data$species)
+class(mass_data$block)
+class(mass_data$treatment)
+class(mass_data$values_mass)
+
+#### define independent variables as correct class
+mass_data$species_factor = as.factor(mass_data$species)
+mass_data$block_factor = as.factor(mass_data$block)
+mass_data$treatment_factor = as.factor(mass_data$treatment)
+                                 
+#### define the mixed effects model
+
+mass_values_lmer = lmer(values_mass ~ treatment * species * block, 
+                             data = mass_data)
+summary(mass_values_lmer)
+Anova(mass_values_lmer)
+cld(emmeans(mass_values_lmer, ~treatment))
+cld(emmeans(mass_values_lmer, ~treatment*species))
+cld(emmeans(mass_values_lmer, ~block*species))
+
+
+
+### head(height_data)
+
+#### see what class each variable is
+class(height_data$treatment)
+class(height_data$rep)
+class(height_data$block)
+class(height_data$species)
+class(values_height)
+
+#### define independent variables as correct class
+height_data$treatment_factor = as.factor(height_data$treatment)
+height_data$rep_factor = as.factor(height_data$rep)
+height_data$block_factor = as.factor(height_data$block)
+height_data$species_factor = as.factor(height_data$species)
+
+#### define the mixed effects model
+height_values_lmer = lmer(values_height ~ treatment * species * rep + (1|block), 
+                             data = height_data)
+summary(height_values_lmer)
+Anova(height_values_lmer)
+cld(emmeans(height_values_lmer, ~treatment))
+cld(emmeans(height_values_lmer, ~treatment*species))
+cld(emmeans(height_values_lmer, ~rep*species))
+
+
 ## make plots
 
 
