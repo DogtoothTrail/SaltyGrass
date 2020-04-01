@@ -83,45 +83,53 @@ class(cn_data$organ)
 class(cn_data$block)
 class(cn_data$nitrogen_percent)
 
-#### define independent variables as correct class
-cn_data$species_factor = as.factor(cn_data$species)
-cn_data$treatment_factor = as.factor(cn_data$treatment)
-cn_data$organ_factor = as.factor(cn_data$organ)
-cn_data$block_factor = as.factor(cn_data$block)
+#### define independent variables as correct class (if necessary)
 
 #### define the mixed effects model
 percent_nitrogen_lmer = lmer(nitrogen_percent ~ treatment * species * organ + (1|block), 
-                             data = cn_data)
-summary(percent_nitrogen_lmer)
-Anova(percent_nitrogen_lmer)
+                             data = cn_data) # fit the model
+plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
+summary(percent_nitrogen_lmer) # look at slope coefficients
+Anova(percent_nitrogen_lmer) # check statistical significance of main effects
 cld(emmeans(percent_nitrogen_lmer, ~treatment))
+cld(emmeans(percent_nitrogen_lmer, ~species))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
 cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
+#### create new variable for CN
+cn_data$cn = cn_data$carbon_weight / cn_data$nitrogen_weight
+
+#### define the mixed effects model
+percent_nitrogen_lmer = lmer(cn ~ treatment * species * organ + (1|block), 
+                             data = cn_data) # fit the model
+plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
+summary(percent_nitrogen_lmer) # look at slope coefficients
+Anova(percent_nitrogen_lmer) # check statistical significance of main effects
+cld(emmeans(percent_nitrogen_lmer, ~treatment)) # CN decreases with salt, interesting!
+cld(emmeans(percent_nitrogen_lmer, ~species))
+cld(emmeans(percent_nitrogen_lmer, ~treatment*species)) # SG is most sensitive
+cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
 ### head(mass_data)
 #### see what class each variable is
 class(mass_data$species)
 class(mass_data$block)
 class(mass_data$treatment)
-class(mass_data$values_mass)
+class(mass_data$mass)
+class(mass_data$organ)
 
-#### define independent variables as correct class
-mass_data$species_factor = as.factor(mass_data$species)
-mass_data$block_factor = as.factor(mass_data$block)
-mass_data$treatment_factor = as.factor(mass_data$treatment)
+#### define independent variables as correct class (if necessary)
                                  
 #### define the mixed effects model
 
-mass_values_lmer = lmer(values_mass ~ treatment * species * block, 
+mass_values_lmer = lmer(log(mass + 0.001) ~ treatment * species * organ + (1|block), 
                              data = mass_data)
+plot(resid(mass_values_lmer) ~ fitted (mass_values_lmer)) # slight horn shape here, need to transform
 summary(mass_values_lmer)
 Anova(mass_values_lmer)
-cld(emmeans(mass_values_lmer, ~treatment))
-cld(emmeans(mass_values_lmer, ~treatment*species))
-cld(emmeans(mass_values_lmer, ~block*species))
-
-
+cld(emmeans(mass_values_lmer, ~treatment)) # mass decreases with salinity treatment
+cld(emmeans(mass_values_lmer, ~species)) # BM is heaviest
+cld(emmeans(mass_values_lmer, ~treatment * species)) # BG has highest sensitivity; others not strongly effected
 
 ### head(height_data)
 
@@ -130,23 +138,22 @@ class(height_data$treatment)
 class(height_data$rep)
 class(height_data$block)
 class(height_data$species)
-class(values_height)
+class(height_data$Height_cm)
 
-#### define independent variables as correct class
-height_data$treatment_factor = as.factor(height_data$treatment)
-height_data$rep_factor = as.factor(height_data$rep)
-height_data$block_factor = as.factor(height_data$block)
-height_data$species_factor = as.factor(height_data$species)
+#### define independent variables as correct class (if necessary)
+
+#### make new variable for index of repeated measure
+##### don't need this, as height_data$Sample is the index
 
 #### define the mixed effects model
-height_values_lmer = lmer(values_height ~ treatment * species * rep + (1|block), 
+height_values_lmer = lmer(log(Height_cm) ~ treatment * species * (1|Sample) + (1|block), 
                              data = height_data)
+plot(resid(height_values_lmer) ~ fitted(height_values_lmer)) # very skewed, need to transform
 summary(height_values_lmer)
 Anova(height_values_lmer)
-cld(emmeans(height_values_lmer, ~treatment))
-cld(emmeans(height_values_lmer, ~treatment*species))
-cld(emmeans(height_values_lmer, ~rep*species))
-
+cld(emmeans(height_values_lmer, ~treatment)) # salt treatment are shorter
+cld(emmeans(height_values_lmer, ~species))
+cld(emmeans(height_values_lmer, ~treatment*species)) # BG is most sensitive, others not as much
 
 ## make plots
 
