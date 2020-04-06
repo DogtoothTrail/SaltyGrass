@@ -11,6 +11,8 @@ library(stringr)
 library(lme4)
 library(car)
 library(emmeans)
+library(ggplot2)
+library(dplyr)
 
 ## load data
 cn_data_raw = read.csv('../Data/saltygrass_cn.csv')
@@ -86,7 +88,7 @@ class(cn_data$nitrogen_percent)
 #### define independent variables as correct class (if necessary)
 
 #### define the mixed effects model
-percent_nitrogen_lmer = lmer(nitrogen_percent ~ treatment * species * organ + (1|block), 
+percent_nitrogen_lmer = lmer(log(nitrogen_percent) ~ treatment * species * organ + (1|block), 
                              data = cn_data) # fit the model
 plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
 summary(percent_nitrogen_lmer) # look at slope coefficients
@@ -100,15 +102,15 @@ cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 cn_data$cn = cn_data$carbon_weight / cn_data$nitrogen_weight
 
 #### define the mixed effects model
-percent_nitrogen_lmer = lmer(log(cn) ~ treatment * species * organ + (1|block), 
+cn_lmer = lmer(log(cn) ~ treatment * species * organ + (1|block), 
                              data = cn_data) # fit the model
-plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
-summary(percent_nitrogen_lmer) # look at slope coefficients
-Anova(percent_nitrogen_lmer) # check statistical significance of main effects
-cld(emmeans(percent_nitrogen_lmer, ~treatment)) # CN decreases with salt, interesting!
-cld(emmeans(percent_nitrogen_lmer, ~species))
-cld(emmeans(percent_nitrogen_lmer, ~treatment*species)) # SG is most sensitive
-cld(emmeans(percent_nitrogen_lmer, ~organ*species))
+plot(resid(cn_lmer) ~ fitted(cn_lmer)) # check  the residuals
+summary(cn_lmer) # look at slope coefficients
+Anova(cn_lmer) # check statistical significance of main effects
+cld(emmeans(cn_lmer, ~treatment)) # CN decreases with salt, interesting!
+cld(emmeans(cn_lmer, ~species))
+cld(emmeans(cn_lmer, ~treatment*species)) # SG is most sensitive
+cld(emmeans(cn_lmer, ~organ*species))
 
 ### head(mass_data)
 #### see what class each variable is
@@ -155,7 +157,114 @@ cld(emmeans(height_values_lmer, ~treatment)) # salt treatment are shorter
 cld(emmeans(height_values_lmer, ~species))
 cld(emmeans(height_values_lmer, ~treatment*species)) # BG is most sensitive, others not as much
 
+### combine mass and percent N data to get whole plant N
+cn_mass_data = left_join(mass_data, cn_data, by.x = pot, by.y = sample_id)
+head(cn_mass_data)
+cn_mass_data$nitrogen_percent_total = (cn_mass_data$nitrogen_percent / 100) * cn_mass_data$mass
+
+nitrogen_percent_total_lmer = lmer(log(nitrogen_percent_total) ~ treatment * species * organ + (1|block), 
+                        data = cn_mass_data)
+plot(resid(nitrogen_percent_total_lmer) ~ fitted (nitrogen_percent_total_lmer)) # slight horn shape here, need to transform
+summary(nitrogen_percent_total_lmer)
+Anova(nitrogen_percent_total_lmer)
+cld(emmeans(nitrogen_percent_total_lmer, ~treatment)) # nitrogen mass decreases with salinity treatment
+cld(emmeans(nitrogen_percent_total_lmer, ~species)) # BM has most
+cld(emmeans(nitrogen_percent_total_lmer, ~treatment * species)) # SG and BM least sensitive and have most
+
+
 ## make plots
 
+### mass plot
+mass_data$salt_treatment = factor(mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+mass_plot = ggplot(data = mass_data, aes(x = species, y = mass, fill = salt_treatment)) + 
+  theme(legend.position = c(0.84, 0.8), # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_boxplot() + # plot the data as a boxplot
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 8) + # change y-axis limits on graph
+  ylab('Mass (g)') +  # change label on y-axis
+  xlab('Species') # change label on x axis
 
+### height plot
+height_data$salt_treatment = factor(height_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+height_plot = ggplot(data = height_data, aes(x = species, y = Height_cm, fill = salt_treatment)) + 
+  theme(legend.position = c(0.84, 0.8), # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_boxplot() + # plot the data as a boxplot
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 120) + # change y-axis limits on graph
+  ylab('Height (cm)') +  # change label on y-axis
+  xlab('Species') # change label on x axis
 
+### percent N plot
+cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+percent_nitrogen_plot = ggplot(data = cn_data, aes(x = species, y = nitrogen_percent, fill = salt_treatment)) + 
+  theme(legend.position = c(0.84, 0.8), # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_boxplot() + # plot the data as a boxplot
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 6) + # change y-axis limits on graph
+  ylab('Shoot N (%)') +  # change label on y-axis
+  xlab('Species') # change label on x axis
+
+### CN plot
+cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+cn_plot = ggplot(data = cn_data, aes(x = species, y = cn, fill = salt_treatment)) + 
+  theme(legend.position = c(0.84, 0.8), # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_boxplot() + # plot the data as a boxplot
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 150) + # change y-axis limits on graph
+  ylab('Shoot C:N') +  # change label on y-axis
+  xlab('Species') # change label on x axis
+
+### mass N plot
+cn_mass_data$salt_treatment = factor(cn_mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+mass_plot = ggplot(data = cn_mass_data, aes(x = species, y = nitrogen_percent_total, fill = salt_treatment)) + 
+  theme(legend.position = c(0.84, 0.8), # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_boxplot() + # plot the data as a boxplot
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 0.08) + # change y-axis limits on graph
+  ylab('Mass N (g)') +  # change label on y-axis
+  xlab('Species') # change label on x axis
