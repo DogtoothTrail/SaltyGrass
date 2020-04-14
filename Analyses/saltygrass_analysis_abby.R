@@ -268,3 +268,22 @@ mass_plot = ggplot(data = cn_mass_data, aes(x = species, y = nitrogen_percent_to
   ylim(0, 0.08) + # change y-axis limits on graph
   ylab('Mass N (g)') +  # change label on y-axis
   xlab('Species') # change label on x axis
+
+## make tables
+
+### percent nitrogen table
+write.csv(Anova(percent_nitrogen_lmer), 'tables/percent_nitrogen_anova.csv')
+
+### cn table
+write.csv(Anova(cn_lmer), 'tables/cn_anova.csv')
+
+### mass table
+write.csv(Anova(mass_values_lmer), 'tables/mass_anova.csv')
+
+### height table
+write.csv(Anova(height_values_lmer), 'tables/height_anova.csv')
+
+### total n table
+write.csv(Anova(nitrogen_percent_total_lmer), 'tables/total_n_anova.csv')
+
+
