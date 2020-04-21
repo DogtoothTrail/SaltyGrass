@@ -13,11 +13,13 @@ library(car)
 library(emmeans)
 library(ggplot2)
 library(dplyr)
+library(ciTools)
 
 ## load data
 cn_data_raw = read.csv('../Data/saltygrass_cn.csv')
 height_data_raw = read.csv('../Data/Finalized_Height_Data_Linear.csv')
 mass_data_raw = read.csv("../Data/Mass_Measurements.csv")
+germination_data_raw = read.csv("../Data/germination_data.csv")
 
 ## curate the CN data
 ### remove the QC values
@@ -69,6 +71,9 @@ mass_data_raw$block = unlist(lapply(sample_id_list_mass, `[[`, 2))
 mass_data_raw$treatment = unlist(lapply(sample_id_list_mass, `[[`, 3))
 
 mass_data = mass_data_raw
+
+## curate the germination data (nothing to do really)
+germination_data = germination_data_raw
 
 ## hypothesis testing
 
@@ -171,6 +176,30 @@ cld(emmeans(nitrogen_percent_total_lmer, ~treatment)) # nitrogen mass decreases 
 cld(emmeans(nitrogen_percent_total_lmer, ~species)) # BM has most
 cld(emmeans(nitrogen_percent_total_lmer, ~treatment * species)) # SG and BM least sensitive and have most
 
+### does increasing salinity influence germination in any of the evaluated species
+
+#### check variable class
+class(germination_data$species)
+class(germination_data$treatment)
+class(germination_data$germination)
+
+#### make new variable for treatment factor
+germination_data$treatment_factor = as.factor(germination_data$treatment)
+
+#### fit model and analyze the results
+germination_lm = glm(germination ~ treatment_factor*species, data = germination_data, family = 'binomial')
+plot(resid(germination_lm) ~ fitted(germination_lm))
+Anova(germination_lm)
+summary(germination_lm)
+
+germination_data_probs = add_probs(germination_data, germination_lm, q = 1, comparison = "=")
+
+germination_data_probs_group = group_by(germination_data_probs, species, treatment_factor)
+summarise(germination_data_probs_group, mean_prob_equal_to1 = mean(prob_equal_to1), 
+          sd_prob_equal_to1 = sd(prob_equal_to1))
+
+cld(emmeans(germination_lm, ~treatment_factor, type = "response"))
+cld(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
 
 ## make plots
 
