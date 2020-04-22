@@ -298,6 +298,27 @@ mass_plot = ggplot(data = cn_mass_data, aes(x = species, y = nitrogen_percent_to
   ylab('Mass N (g)') +  # change label on y-axis
   xlab('Species') # change label on x axis
 
+### germination plot
+germination_probs = summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
+germination_probs$salt_treatment = factor(germination_probs$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, fill = salt_treatment)) + 
+  theme(legend.position = 'right', # change where the legend is
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black")) + # change box of legend
+  geom_col(position = "dodge", col = 'black') + # plot the data as a barplot
+  geom_errorbar(aes(ymin = prob - SE, ymax = prob + SE), position = position_dodge(0.9), width = 0.4) + # add error bars
+  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  ylim(0, 1) + # change y-axis limits on graph
+  ylab('Prob. of germination') +  # change label on y-axis
+  xlab('Species') # change label on x axis
+
 ## make tables
 
 ### percent nitrogen table
@@ -314,5 +335,8 @@ write.csv(Anova(height_values_lmer), 'tables/height_anova.csv')
 
 ### total n table
 write.csv(Anova(nitrogen_percent_total_lmer), 'tables/total_n_anova.csv')
+
+### germination table
+write.csv(Anova(germination_lm), 'tables/germination_anova.csv')
 
 
