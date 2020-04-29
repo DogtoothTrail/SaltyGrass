@@ -137,6 +137,7 @@ Anova(mass_values_lmer)
 cld(emmeans(mass_values_lmer, ~treatment)) # mass decreases with salinity treatment
 cld(emmeans(mass_values_lmer, ~species)) # BM is heaviest
 cld(emmeans(mass_values_lmer, ~treatment * species)) # BG has highest sensitivity; others not strongly effected
+cld(emmeans(mass_values_lmer, ~treatment * organ))
 
 ### head(height_data)
 
