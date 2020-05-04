@@ -221,7 +221,9 @@ mass_plot = ggplot(data = mass_data, aes(x = species, y = mass, fill = salt_trea
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 8) + # change y-axis limits on graph
   ylab('Mass (g)') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis 
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                              "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ### height plot
 height_data$salt_treatment = factor(height_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
@@ -240,7 +242,9 @@ height_plot = ggplot(data = height_data, aes(x = species, y = Height_cm, fill = 
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 120) + # change y-axis limits on graph
   ylab('Height (cm)') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ### percent N plot
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
@@ -259,7 +263,9 @@ percent_nitrogen_plot = ggplot(data = cn_data, aes(x = species, y = nitrogen_per
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 6) + # change y-axis limits on graph
   ylab('Shoot N (%)') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ### CN plot
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
@@ -278,7 +284,9 @@ cn_plot = ggplot(data = cn_data, aes(x = species, y = cn, fill = salt_treatment)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 150) + # change y-axis limits on graph
   ylab('Shoot C:N') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ### mass N plot
 cn_mass_data$salt_treatment = factor(cn_mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
@@ -297,7 +305,9 @@ mass_plot = ggplot(data = cn_mass_data, aes(x = species, y = nitrogen_percent_to
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 0.08) + # change y-axis limits on graph
   ylab('Mass N (g)') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ### germination plot
 germination_probs = summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
@@ -318,7 +328,9 @@ germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, f
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 1) + # change y-axis limits on graph
   ylab('Prob. of germination') +  # change label on y-axis
-  xlab('Species') # change label on x axis
+  xlab('Species') + # change label on x axis
+  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
+                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
 
 ## make tables
 
