@@ -169,6 +169,12 @@ cld(emmeans(mass_values_lmer, ~treatment)) # mass decreases with salinity treatm
 cld(emmeans(mass_values_lmer, ~species)) # BM is heaviest
 cld(emmeans(mass_values_lmer, ~treatment * species)) # BG has highest sensitivity; others not strongly effected
 cld(emmeans(mass_values_lmer, ~treatment * organ))
+(exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[3, 3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[1, 3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[1, 3])
+(exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[7, 3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])
 
 ### head(height_data)
 
@@ -314,7 +320,8 @@ dev.off()
 ### percent N plot
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y = nitrogen_percent, fill = salt_treatment)) + 
-  theme(legend.position = c(0.84, 0.8), # change where the legend is
+  theme(legend.position = c(0, 1), # change where the legend is
+        legend.justification = c(0, 1), # change where the legend is
         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
@@ -349,20 +356,20 @@ percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x 
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 4) + # change y-axis limits on graph
   ylab('Root N (%)') +  # change label on y-axis
-  xlab('Species') + # change label on x axis
+  xlab('') + # change label on x axis
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula"))))
 
-jpeg(filename = "plots/percent_nitrogen_plot.jpeg", width = 600, height = 900, units = 'px')
-multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, cols=1)
-dev.off()
+# jpeg(filename = "plots/percent_nitrogen_plot.jpeg", width = 600, height = 900, units = 'px')
+# multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, cols=1)
+# dev.off()
 
 ### CN plot
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 cn_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y = cn, fill = salt_treatment)) + 
-  theme(legend.position = c(0.84, 0.8), # change where the legend is
+  theme(legend.position = 'none', # change where the legend is
         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
@@ -376,7 +383,7 @@ cn_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y 
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
   ylim(0, 100) + # change y-axis limits on graph
   ylab('Shoot C:N') +  # change label on y-axis
-  xlab('') + # change label on x axis
+  xlab('Species') + # change label on x axis
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
@@ -403,8 +410,13 @@ cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y =
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula"))))
 
-jpeg(filename = "plots/cn_plot.jpeg", width = 600, height = 900, units = 'px')
-multiplot(cn_plot_shoot, cn_plot_root, cols=1)
+# jpeg(filename = "plots/cn_plot.jpeg", width = 600, height = 900, units = 'px')
+# multiplot(cn_plot_shoot, cn_plot_root, cols=1)
+# dev.off()
+
+jpeg(filename = "plots/percent_nitrogen_cn_plot.jpeg", width = 1200, height = 900, units = 'px')
+multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, 
+          cn_plot_shoot, cn_plot_root, cols=2)
 dev.off()
 
 ### mass N plot
