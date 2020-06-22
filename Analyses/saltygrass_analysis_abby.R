@@ -134,6 +134,41 @@ cld(emmeans(percent_nitrogen_lmer, ~species))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
 cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
+#### percent change for BG
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[3,3]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[1,3])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[1,3])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[19,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[17,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[17,4])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[3,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[1,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[1,4])
+#### percent change for SG
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[15,3]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[13,3])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[13,3])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[31,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[29,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[29,4])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[15,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[13,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[13,4])
+#### percent change for LB
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[27,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[25,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[25,4])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[11,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[9,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[9,4])
+#### percent change for BM
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[23,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[21,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[21,4])
+(exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[7,4]) - 
+    exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[5,4])) / 
+  exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species*organ))[5,4])
+
 #### create new variable for CN
 cn_data$cn = cn_data$carbon_weight / cn_data$nitrogen_weight
 
@@ -147,6 +182,46 @@ cld(emmeans(cn_lmer, ~treatment)) # CN decreases with salt, interesting!
 cld(emmeans(cn_lmer, ~species))
 cld(emmeans(cn_lmer, ~treatment*species)) # SG is most sensitive
 cld(emmeans(cn_lmer, ~organ*species))
+
+#### percent change root
+(exp(summary(emmeans(cn_lmer, ~treatment*organ))[3, 3]) - 
+  exp(summary(emmeans(cn_lmer, ~treatment*organ))[1, 3])) /
+  exp(summary(emmeans(cn_lmer, ~treatment*organ))[1, 3])
+
+#### percent change for BG
+(exp(summary(emmeans(cn_lmer, ~treatment*species))[3,3]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species))[1,3])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species))[1,3])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[19,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[17,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[17,4])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[3,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[1,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[1,4])
+#### percent change for SG
+(exp(summary(emmeans(cn_lmer, ~treatment*species))[15,3]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species))[13,3])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species))[13,3])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[31,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[29,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[29,4])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[15,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[13,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[13,4])
+#### percent change for LB
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[27,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[25,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[25,4])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[11,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[9,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[9,4])
+#### percent change for BM
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[23,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[21,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[21,4])
+(exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[7,4]) - 
+    exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[5,4])) / 
+  exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[5,4])
 
 ### head(mass_data)
 #### see what class each variable is
@@ -176,7 +251,33 @@ cld(emmeans(mass_values_lmer, ~treatment * organ))
     exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])) / 
   exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])
 
-### head(height_data)
+### biomass responses for BG
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species))[3,3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species))[1,3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species))[1,3])
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[19,4]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[17,4])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[17,4])
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[3,4]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[1,4])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[1,4])
+### biomass responses for BM
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species))[7,3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species))[5,3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species))[5,3])
+### biomass responses for LB
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species))[11,3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species))[9,3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species))[9,3])
+### biomass responses for SG
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[31,4]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[29,4])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[29,4])
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[15,4]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[13,4])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[13,4])
+
+###
 
 #### see what class each variable is
 class(height_data$treatment)
@@ -239,12 +340,25 @@ summarise(germination_data_probs_group, mean_prob_equal_to1 = mean(prob_equal_to
 cld(emmeans(germination_lm, ~treatment_factor, type = "response"))
 cld(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
 
+#### calculate change in germination probability for each species
+summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[4, 3] - 
+  summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[1, 3]
+summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[16, 3] - 
+  summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[13, 3]
+summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[12, 3] - 
+  summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[9, 3]
+summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[8, 3] - 
+  summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[5, 3]
+
 ## make plots
 
 ### mass plot
 mass_data$salt_treatment = factor(mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 mass_plot_shoot = ggplot(data = subset(mass_data, organ == 'S'), aes(x = species, y = mass, fill = salt_treatment)) + 
-  theme(legend.position = c(0.84, 0.8), # change where the legend is
+  theme(legend.position = c(1, 1), 
+        legend.justification = c(1, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
@@ -252,17 +366,19 @@ mass_plot_shoot = ggplot(data = subset(mass_data, organ == 'S'), aes(x = species
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  labs(fill = 'Salinity treatment (dS/m)') + # change label for legend
   ylim(0, 8) + # change y-axis limits on graph
   ylab('Shoot mass (g)') +  # change label on y-axis
   xlab('') + # change label on x axis 
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "A")
 
 mass_plot_root = ggplot(data = subset(mass_data, organ == 'R'), aes(x = species, y = mass, fill = salt_treatment)) + 
   theme(legend.position = 'none', # change where the legend is
@@ -273,7 +389,8 @@ mass_plot_root = ggplot(data = subset(mass_data, organ == 'R'), aes(x = species,
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
@@ -283,45 +400,48 @@ mass_plot_root = ggplot(data = subset(mass_data, organ == 'R'), aes(x = species,
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "B")
 
 
-jpeg(filename = "plots/mass_plot.jpeg", width = 600, height = 900, units = 'px')
+jpeg(filename = "plots/revised/Figure2.jpeg", width = 8, height = 12, units = 'in', res = 600)
 multiplot(mass_plot_shoot, mass_plot_root, cols=1)
 dev.off()
 
 ### height plot
-height_data$salt_treatment = factor(height_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
-height_plot = ggplot(data = height_data, aes(x = species, y = Height_cm, fill = salt_treatment)) + 
-  theme(legend.position = c(0.84, 0.8), # change where the legend is
-        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
-        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
-        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
-        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
-        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
-        panel.grid.major = element_line(colour = "grey"), # change backgrond color
-        legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
-  geom_boxplot() + # plot the data as a boxplot
-  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
-  ylim(0, 120) + # change y-axis limits on graph
-  ylab('Height (cm)') +  # change label on y-axis
-  xlab('Species') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
-                            "BM" = expression(italic("C. dactylon")),
-                            "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
-
-jpeg(filename = "plots/height_plot.jpeg", width = 600, height = 450, units = 'px')
-print(height_plot)
-dev.off()
+# height_data$salt_treatment = factor(height_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+# height_plot = ggplot(data = height_data, aes(x = species, y = Height_cm, fill = salt_treatment)) + 
+#   theme(legend.position = c(0.84, 0.8), # change where the legend is
+#         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+#         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+#         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+#         axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+#         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+#         panel.grid.major = element_line(colour = "grey"), # change backgrond color
+#         legend.background = element_blank(), # change background of legend
+#         legend.box.background = element_rect(colour = "black")) + # change box of legend
+#   geom_boxplot() + # plot the data as a boxplot
+#   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+#   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+#   ylim(0, 120) + # change y-axis limits on graph
+#   ylab('Height (cm)') +  # change label on y-axis
+#   xlab('Species') + # change label on x axis
+#   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+#                             "BM" = expression(italic("C. dactylon")),
+#                             "LB" = expression(italic("S. scoparium")), 
+#                             "SG"= expression(italic("B. curtipendula"))))
+# 
+# jpeg(filename = "plots/height_plot.jpeg", width = 600, height = 450, units = 'px')
+# print(height_plot)
+# dev.off()
 
 ### percent N plot
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y = nitrogen_percent, fill = salt_treatment)) + 
   theme(legend.position = c(0, 1), # change where the legend is
         legend.justification = c(0, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
@@ -329,17 +449,19 @@ percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  labs(fill = 'Salinity treatment (dS/m)') + # change label for legend
   ylim(0, 6) + # change y-axis limits on graph
   ylab('Shoot N (%)') +  # change label on y-axis
   xlab('') + # change label on x axis
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "A")
 
 percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y = nitrogen_percent, fill = salt_treatment)) + 
   theme(legend.position = 'none', # change where the legend is
@@ -350,7 +472,8 @@ percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x 
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
@@ -360,7 +483,8 @@ percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x 
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "B")
 
 # jpeg(filename = "plots/percent_nitrogen_plot.jpeg", width = 600, height = 900, units = 'px')
 # multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, cols=1)
@@ -377,7 +501,8 @@ cn_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y 
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
@@ -387,7 +512,8 @@ cn_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y 
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "C")
 
 cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y = cn, fill = salt_treatment)) + 
   theme(legend.position = 'none', # change where the legend is
@@ -398,7 +524,8 @@ cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y =
         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
         panel.grid.major = element_line(colour = "grey"), # change backgrond color
         legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30)) + # change box of legend
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
@@ -408,64 +535,65 @@ cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y =
   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
+                            "SG"= expression(italic("B. curtipendula")))) +
+  labs(tag = "D")
 
 # jpeg(filename = "plots/cn_plot.jpeg", width = 600, height = 900, units = 'px')
 # multiplot(cn_plot_shoot, cn_plot_root, cols=1)
 # dev.off()
 
-jpeg(filename = "plots/percent_nitrogen_cn_plot.jpeg", width = 1200, height = 900, units = 'px')
+jpeg(filename = "plots/revised/Figure3.jpeg", width = 16, height = 14, units = 'in', res = 600)
 multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, 
           cn_plot_shoot, cn_plot_root, cols=2)
 dev.off()
 
 ### mass N plot
-cn_mass_data$salt_treatment = factor(cn_mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
-mass_n_plot_shoot = ggplot(data = subset(cn_mass_data, organ == 'S'), aes(x = species, y = nitrogen_percent_total, fill = salt_treatment)) + 
-  theme(legend.position = c(0.84, 0.8), # change where the legend is
-        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
-        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
-        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
-        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
-        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
-        panel.grid.major = element_line(colour = "grey"), # change backgrond color
-        legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
-  geom_boxplot() + # plot the data as a boxplot
-  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
-  ylim(0, 0.1) + # change y-axis limits on graph
-  ylab('Shoot mass N (g)') +  # change label on y-axis
-  xlab('') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
-                            "BM" = expression(italic("C. dactylon")),
-                            "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
-
-mass_n_plot_root = ggplot(data = subset(cn_mass_data, organ == 'R'), aes(x = species, y = nitrogen_percent_total, fill = salt_treatment)) + 
-  theme(legend.position = 'none', # change where the legend is
-        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
-        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
-        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
-        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
-        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
-        panel.grid.major = element_line(colour = "grey"), # change backgrond color
-        legend.background = element_blank(), # change background of legend
-        legend.box.background = element_rect(colour = "black")) + # change box of legend
-  geom_boxplot() + # plot the data as a boxplot
-  scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
-  ylim(0, 0.02) + # change y-axis limits on graph
-  ylab('Root mass N (g)') +  # change label on y-axis
-  xlab('Species') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
-                            "BM" = expression(italic("C. dactylon")),
-                            "LB" = expression(italic("S. scoparium")), 
-                            "SG"= expression(italic("B. curtipendula"))))
-
-jpeg(filename = "plots/mass_n_plot.jpeg", width = 600, height = 900, units = 'px')
-multiplot(mass_n_plot_shoot, mass_n_plot_root, cols=1)
-dev.off()
+# cn_mass_data$salt_treatment = factor(cn_mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
+# mass_n_plot_shoot = ggplot(data = subset(cn_mass_data, organ == 'S'), aes(x = species, y = nitrogen_percent_total, fill = salt_treatment)) + 
+#   theme(legend.position = c(0.84, 0.8), # change where the legend is
+#         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+#         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+#         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+#         axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+#         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+#         panel.grid.major = element_line(colour = "grey"), # change backgrond color
+#         legend.background = element_blank(), # change background of legend
+#         legend.box.background = element_rect(colour = "black")) + # change box of legend
+#   geom_boxplot() + # plot the data as a boxplot
+#   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+#   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+#   ylim(0, 0.1) + # change y-axis limits on graph
+#   ylab('Shoot mass N (g)') +  # change label on y-axis
+#   xlab('') + # change label on x axis
+#   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+#                             "BM" = expression(italic("C. dactylon")),
+#                             "LB" = expression(italic("S. scoparium")), 
+#                             "SG"= expression(italic("B. curtipendula"))))
+# 
+# mass_n_plot_root = ggplot(data = subset(cn_mass_data, organ == 'R'), aes(x = species, y = nitrogen_percent_total, fill = salt_treatment)) + 
+#   theme(legend.position = 'none', # change where the legend is
+#         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+#         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+#         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+#         axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+#         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+#         panel.grid.major = element_line(colour = "grey"), # change backgrond color
+#         legend.background = element_blank(), # change background of legend
+#         legend.box.background = element_rect(colour = "black")) + # change box of legend
+#   geom_boxplot() + # plot the data as a boxplot
+#   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
+#   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+#   ylim(0, 0.02) + # change y-axis limits on graph
+#   ylab('Root mass N (g)') +  # change label on y-axis
+#   xlab('Species') + # change label on x axis
+#   scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+#                             "BM" = expression(italic("C. dactylon")),
+#                             "LB" = expression(italic("S. scoparium")), 
+#                             "SG"= expression(italic("B. curtipendula"))))
+# 
+# jpeg(filename = "plots/mass_n_plot.jpeg", width = 600, height = 900, units = 'px')
+# multiplot(mass_n_plot_shoot, mass_n_plot_root, cols=1)
+# dev.off()
 
 ### germination plot
 germination_probs = summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
@@ -489,6 +617,10 @@ germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, f
   xlab('Species') + # change label on x axis
   scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
                           "LB" = "S. scoparium", "SG"= "B. curtipendula"))
+
+jpeg(filename = "plots/revised/Figure1.jpeg", width = 12, height = 7, units = 'in', res = 600)
+plot(germination_plot)
+dev.off()
 
 ## make tables
 
