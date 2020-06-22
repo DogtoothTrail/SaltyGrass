@@ -106,6 +106,11 @@ mass_data = mass_data_raw
 ## curate the germination data (nothing to do really)
 germination_data = germination_data_raw
 
+## print data (for publication)
+# write.csv(cn_data, '../Data/curated_from_analysis/cn_data.csv', row.names = F)
+# write.csv(mass_data, '../Data/curated_from_analysis/mass_data.csv', row.names = F)
+# write.csv(germination_data, '../Data/curated_from_analysis/germination_data.csv', row.names = F)
+
 ## hypothesis testing
 
 ### Does salinity affect nitrogen concentration and does this vary by species?
