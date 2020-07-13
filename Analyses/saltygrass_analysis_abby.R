@@ -616,12 +616,16 @@ germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, f
   geom_col(position = "dodge", col = 'black') + # plot the data as a barplot
   geom_errorbar(aes(ymin = prob - SE, ymax = prob + SE), position = position_dodge(0.9), width = 0.4) + # add error bars
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-  labs(fill = 'Salt treatment (ds/m)') + # change label for legend
+  labs(fill = 'Salt treatment (dS/m)') + # change label for legend
   ylim(0, 1) + # change y-axis limits on graph
   ylab('Prob. of germination') +  # change label on y-axis
-  xlab('Species') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = "B. gracilis", "BM" = "C. dactylon",
-                          "LB" = "S. scoparium", "SG"= "B. curtipendula"))
+  xlab('Species') +   # change label on x axis
+  scale_x_discrete(limits = rev(levels(treatment_factor*species))) +
+  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+                            "BM" = expression(italic("C. dactylon")), 
+                            "LB" = expression(italic("S. scoparium")), 
+                            "SG" = expression(italic("B. curtipendula")))
+                  
 
 jpeg(filename = "plots/revised/Figure1.jpeg", width = 12, height = 7, units = 'in', res = 600)
 plot(germination_plot)
