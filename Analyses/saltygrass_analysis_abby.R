@@ -379,7 +379,8 @@ mass_plot_shoot = ggplot(data = subset(mass_data, organ == 'S'), aes(x = species
   ylim(0, 8) + # change y-axis limits on graph
   ylab('Shoot mass (g)') +  # change label on y-axis
   xlab('') + # change label on x axis 
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -402,7 +403,8 @@ mass_plot_root = ggplot(data = subset(mass_data, organ == 'R'), aes(x = species,
   ylim(0, 4) + # change y-axis limits on graph
   ylab('Root mass (g)') +  # change label on y-axis
   xlab('Species') + # change label on x axis 
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -462,7 +464,8 @@ percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x
   ylim(0, 6) + # change y-axis limits on graph
   ylab('Shoot N (%)') +  # change label on y-axis
   xlab('') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -485,7 +488,8 @@ percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x 
   ylim(0, 4) + # change y-axis limits on graph
   ylab('Root N (%)') +  # change label on y-axis
   xlab('') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -514,7 +518,8 @@ cn_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y 
   ylim(0, 100) + # change y-axis limits on graph
   ylab('Shoot C:N') +  # change label on y-axis
   xlab('Species') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -537,7 +542,8 @@ cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y =
   ylim(0, 100) + # change y-axis limits on graph
   ylab('Root C:N') +  # change label on y-axis
   xlab('Species') + # change label on x axis
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")),
                             "LB" = expression(italic("S. scoparium")), 
                             "SG"= expression(italic("B. curtipendula")))) +
@@ -620,11 +626,12 @@ germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, f
   ylim(0, 1) + # change y-axis limits on graph
   ylab('Prob. of germination') +  # change label on y-axis
   xlab('Species') +   # change label on x axis
-  scale_x_discrete(limits = rev(levels(treatment_factor*species))) +
-  scale_x_discrete(labels=c("BG" = expression(italic("B. gracilis")), 
+  # scale_x_discrete(limits = rev(levels(treatment_factor*species))) +
+  scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
+                   labels=c("BG" = expression(italic("B. gracilis")), 
                             "BM" = expression(italic("C. dactylon")), 
                             "LB" = expression(italic("S. scoparium")), 
-                            "SG" = expression(italic("B. curtipendula")))
+                            "SG" = expression(italic("B. curtipendula"))))
                   
 
 jpeg(filename = "plots/revised/Figure1.jpeg", width = 12, height = 7, units = 'in', res = 600)
