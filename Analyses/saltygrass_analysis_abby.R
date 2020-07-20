@@ -461,7 +461,7 @@ percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salinity treatment (dS/m)') + # change label for legend
-  ylim(0, 6) + # change y-axis limits on graph
+  ylim(0, 3) + # change y-axis limits on graph
   ylab('Shoot N (%)') +  # change label on y-axis
   xlab('') + # change label on x axis
   scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
@@ -485,7 +485,7 @@ percent_nitrogen_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x 
   geom_boxplot() + # plot the data as a boxplot
   scale_fill_brewer(palette="Greys") + #use the greys palette (see: https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html)
   labs(fill = 'Salt treatment (ds/m)') + # change label for legend
-  ylim(0, 4) + # change y-axis limits on graph
+  ylim(0, 3) + # change y-axis limits on graph
   ylab('Root N (%)') +  # change label on y-axis
   xlab('') + # change label on x axis
   scale_x_discrete(limits = c("BM", "SG", "BG", "LB"),
@@ -553,7 +553,7 @@ cn_plot_root = ggplot(data = subset(cn_data, organ == 'R'), aes(x = species, y =
 # multiplot(cn_plot_shoot, cn_plot_root, cols=1)
 # dev.off()
 
-jpeg(filename = "plots/revised/Figure3.jpeg", width = 16, height = 14, units = 'in', res = 600)
+jpeg(filename = "plots/revised/Figure3_v2.jpeg", width = 16, height = 14, units = 'in', res = 600)
 multiplot(percent_nitrogen_plot_shoot, percent_nitrogen_plot_root, 
           cn_plot_shoot, cn_plot_root, cols=2)
 dev.off()
