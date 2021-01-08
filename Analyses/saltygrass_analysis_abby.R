@@ -133,10 +133,11 @@ percent_nitrogen_lmer = lmer(log(nitrogen_percent) ~ treatment * species * organ
                              data = cn_data) # fit the model
 plot(resid(percent_nitrogen_lmer) ~ fitted(percent_nitrogen_lmer)) # check  the residuals
 summary(percent_nitrogen_lmer) # look at slope coefficients
-Anova(percent_nitrogen_lmer) # check statistical significance of main effects
+Anova(percent_nitrogen_lmer, test.statistic = 'F') # check statistical significance of main effects
 cld(emmeans(percent_nitrogen_lmer, ~treatment))
 cld(emmeans(percent_nitrogen_lmer, ~species))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
+cld(emmeans(percent_nitrogen_lmer, ~treatment*species), alpha = 0.1)
 cld(emmeans(percent_nitrogen_lmer, ~organ*species))
 
 #### percent change for BG
@@ -182,10 +183,11 @@ cn_lmer = lmer(log(cn) ~ treatment * species * organ + (1|block),
                              data = cn_data) # fit the model
 plot(resid(cn_lmer) ~ fitted(cn_lmer)) # check  the residuals
 summary(cn_lmer) # look at slope coefficients
-Anova(cn_lmer) # check statistical significance of main effects
+Anova(cn_lmer, test.statistic = 'F') # check statistical significance of main effects
 cld(emmeans(cn_lmer, ~treatment)) # CN decreases with salt, interesting!
 cld(emmeans(cn_lmer, ~species))
 cld(emmeans(cn_lmer, ~treatment*species)) # SG is most sensitive
+cld(emmeans(cn_lmer, ~treatment*species), alpha = 0.1) # SG is most sensitive
 cld(emmeans(cn_lmer, ~organ*species))
 
 #### percent change root
@@ -244,11 +246,15 @@ mass_values_lmer = lmer(log(mass + 0.001) ~ treatment * species * organ + (1|blo
                              data = mass_data)
 plot(resid(mass_values_lmer) ~ fitted (mass_values_lmer)) # slight horn shape here, need to transform
 summary(mass_values_lmer)
-Anova(mass_values_lmer)
+Anova(mass_values_lmer, test.statistic = 'F')
 cld(emmeans(mass_values_lmer, ~treatment)) # mass decreases with salinity treatment
 cld(emmeans(mass_values_lmer, ~species)) # BM is heaviest
 cld(emmeans(mass_values_lmer, ~treatment * species)) # BG has highest sensitivity; others not strongly effected
+cld(emmeans(mass_values_lmer, ~treatment * species), alpha = 0.1) # BG has highest sensitivity; others not strongly effected
+cld(emmeans(mass_values_lmer, ~treatment, at = list(species = 'BG')))
 cld(emmeans(mass_values_lmer, ~treatment * organ))
+cld(emmeans(mass_values_lmer, ~treatment, at = list(organ = 'R')))
+cld(emmeans(mass_values_lmer, ~treatment, at = list(organ = 'S')))
 (exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[3, 3]) - 
     exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[1, 3])) / 
   exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[1, 3])
@@ -275,6 +281,10 @@ cld(emmeans(mass_values_lmer, ~treatment * organ))
     exp(summary(emmeans(mass_values_lmer, ~treatment*species))[9,3])) / 
   exp(summary(emmeans(mass_values_lmer, ~treatment*species))[9,3])
 ### biomass responses for SG
+(exp(summary(emmeans(mass_values_lmer, ~treatment*species))[15,3]) - 
+    exp(summary(emmeans(mass_values_lmer, ~treatment*species))[13,3])) / 
+  exp(summary(emmeans(mass_values_lmer, ~treatment*species))[13,3])
+
 (exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[31,4]) - 
     exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[29,4])) / 
   exp(summary(emmeans(mass_values_lmer, ~treatment*species*organ))[29,4])
@@ -297,14 +307,14 @@ class(height_data$Height_cm)
 ##### don't need this, as height_data$Sample is the index
 
 #### define the mixed effects model
-height_values_lmer = lmer(log(Height_cm) ~ treatment * species * (1|Sample) + (1|block), 
-                             data = height_data)
-plot(resid(height_values_lmer) ~ fitted(height_values_lmer)) # very skewed, need to transform
-summary(height_values_lmer)
-Anova(height_values_lmer)
-cld(emmeans(height_values_lmer, ~treatment)) # salt treatment are shorter
-cld(emmeans(height_values_lmer, ~species))
-cld(emmeans(height_values_lmer, ~treatment*species)) # BG is most sensitive, others not as much
+# height_values_lmer = lmer(log(Height_cm) ~ treatment * species * (1|Sample) + (1|block), 
+#                              data = height_data)
+# plot(resid(height_values_lmer) ~ fitted(height_values_lmer)) # very skewed, need to transform
+# summary(height_values_lmer)
+# Anova(height_values_lmer, test.statistic = 'F')
+# cld(emmeans(height_values_lmer, ~treatment)) # salt treatment are shorter
+# cld(emmeans(height_values_lmer, ~species))
+# cld(emmeans(height_values_lmer, ~treatment*species)) # BG is most sensitive, others not as much
 
 ### combine mass and percent N data to get whole plant N
 cn_mass_data = left_join(mass_data, cn_data, by.x = pot, by.y = sample_id)
@@ -315,7 +325,7 @@ nitrogen_percent_total_lmer = lmer(log(nitrogen_percent_total) ~ treatment * spe
                         data = cn_mass_data)
 plot(resid(nitrogen_percent_total_lmer) ~ fitted (nitrogen_percent_total_lmer)) # slight horn shape here, need to transform
 summary(nitrogen_percent_total_lmer)
-Anova(nitrogen_percent_total_lmer)
+Anova(nitrogen_percent_total_lmer, test.statistic = 'F')
 cld(emmeans(nitrogen_percent_total_lmer, ~treatment)) # nitrogen mass decreases with salinity treatment
 cld(emmeans(nitrogen_percent_total_lmer, ~species)) # BM has most
 cld(emmeans(nitrogen_percent_total_lmer, ~treatment * species)) # SG and BM least sensitive and have most
@@ -333,8 +343,12 @@ germination_data$treatment_factor = as.factor(germination_data$treatment)
 #### fit model and analyze the results
 germination_lm = glm(germination ~ treatment_factor*species, data = germination_data, family = 'binomial')
 plot(resid(germination_lm) ~ fitted(germination_lm))
-Anova(germination_lm)
+Anova(germination_lm, test.statistic = 'F')
 summary(germination_lm)
+cld(emmeans(germination_lm, ~treatment_factor, at = list(species = 'BG')))
+cld(emmeans(germination_lm, ~treatment_factor, at = list(species = 'BM')))
+cld(emmeans(germination_lm, ~treatment_factor, at = list(species = 'LB')))
+cld(emmeans(germination_lm, ~treatment_factor, at = list(species = 'SG')))
 
 germination_data_probs = add_probs(germination_data, germination_lm, q = 1, comparison = "=")
 
@@ -641,21 +655,21 @@ dev.off()
 ## make tables
 
 ### percent nitrogen table
-write.csv(Anova(percent_nitrogen_lmer), 'tables/percent_nitrogen_anova.csv')
+write.csv(Anova(percent_nitrogen_lmer, test.statistic = 'F'), 'tables/percent_nitrogen_anova_F.csv')
 
 ### cn table
-write.csv(Anova(cn_lmer), 'tables/cn_anova.csv')
+write.csv(Anova(cn_lmer, test.statistic = 'F'), 'tables/cn_anova_F.csv')
 
 ### mass table
-write.csv(Anova(mass_values_lmer), 'tables/mass_anova.csv')
+write.csv(Anova(mass_values_lmer, test.statistic = 'F'), 'tables/mass_anova_F.csv')
 
 ### height table
-write.csv(Anova(height_values_lmer), 'tables/height_anova.csv')
+# write.csv(Anova(height_values_lmer), 'tables/height_anova.csv')
 
 ### total n table
-write.csv(Anova(nitrogen_percent_total_lmer), 'tables/total_n_anova.csv')
+# write.csv(Anova(nitrogen_percent_total_lmer, test.statistic = 'F'), 'tables/total_n_anova.csv')
 
 ### germination table
-write.csv(Anova(germination_lm), 'tables/germination_anova.csv')
+write.csv(Anova(germination_lm, test.statistic = 'F'), 'tables/germination_anova_F.csv')
 
 
