@@ -119,6 +119,9 @@ germination_data = germination_data_raw
 #### take a look at the top 6 rows
 ### head(cn_data)
 
+#### create continuous treatment variable
+cn_data$treatment_continuous = as.numeric(cn_data$treatment)
+
 #### see what class each variable is
 class(cn_data$species)
 class(cn_data$treatment)
@@ -139,6 +142,12 @@ cld(emmeans(percent_nitrogen_lmer, ~species))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species))
 cld(emmeans(percent_nitrogen_lmer, ~treatment*species), alpha = 0.1)
 cld(emmeans(percent_nitrogen_lmer, ~organ*species))
+
+percent_nitrogen_lmer_continuous = lmer(log(nitrogen_percent) ~ treatment_continuous * species * organ + (1|block), 
+                             data = cn_data) # fit the model
+Anova(percent_nitrogen_lmer_continuous, test.statistic = 'F')
+test(emtrends(percent_nitrogen_lmer_continuous, ~species, var = 'treatment_continuous'))
+cld(emtrends(percent_nitrogen_lmer_continuous, ~species, var = 'treatment_continuous'))
 
 #### percent change for BG
 (exp(summary(emmeans(percent_nitrogen_lmer, ~treatment*species))[3,3]) - 
@@ -190,6 +199,12 @@ cld(emmeans(cn_lmer, ~treatment*species)) # SG is most sensitive
 cld(emmeans(cn_lmer, ~treatment*species), alpha = 0.1) # SG is most sensitive
 cld(emmeans(cn_lmer, ~organ*species))
 
+cn_lmer_continuous = lmer(log(cn) ~ treatment_continuous * species * organ + (1|block), 
+                                        data = cn_data) # fit the model
+Anova(cn_lmer_continuous, test.statistic = 'F')
+test(emtrends(cn_lmer_continuous, ~species, var = 'treatment_continuous'))
+cld(emtrends(cn_lmer_continuous, ~species, var = 'treatment_continuous'))
+
 #### percent change root
 (exp(summary(emmeans(cn_lmer, ~treatment*organ))[3, 3]) - 
   exp(summary(emmeans(cn_lmer, ~treatment*organ))[1, 3])) /
@@ -231,6 +246,10 @@ cld(emmeans(cn_lmer, ~organ*species))
   exp(summary(emmeans(cn_lmer, ~treatment*species*organ))[5,4])
 
 ### head(mass_data)
+
+#### mass data continuous treatment
+mass_data$treatment_continuous = as.numeric(mass_data$treatment)
+
 #### see what class each variable is
 class(mass_data$species)
 class(mass_data$block)
@@ -261,6 +280,12 @@ cld(emmeans(mass_values_lmer, ~treatment, at = list(organ = 'S')))
 (exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[7, 3]) - 
     exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])) / 
   exp(summary(emmeans(mass_values_lmer, ~treatment * organ))[5, 3])
+
+mass_values_lmer_continuous = lmer(log(mass + 0.001) ~ treatment_continuous * species * organ + (1|block), 
+                        data = mass_data)
+Anova(mass_values_lmer_continuous, test_statistic = 'F')
+test(emtrends(mass_values_lmer_continuous, ~species, var = 'treatment_continuous'))
+cld(emtrends(mass_values_lmer_continuous, ~species, var = 'treatment_continuous'))
 
 ### biomass responses for BG
 (exp(summary(emmeans(mass_values_lmer, ~treatment*species))[3,3]) - 
@@ -317,20 +342,23 @@ class(height_data$Height_cm)
 # cld(emmeans(height_values_lmer, ~treatment*species)) # BG is most sensitive, others not as much
 
 ### combine mass and percent N data to get whole plant N
-cn_mass_data = left_join(mass_data, cn_data, by.x = pot, by.y = sample_id)
-head(cn_mass_data)
-cn_mass_data$nitrogen_percent_total = (cn_mass_data$nitrogen_percent / 100) * cn_mass_data$mass
-
-nitrogen_percent_total_lmer = lmer(log(nitrogen_percent_total) ~ treatment * species * organ + (1|block), 
-                        data = cn_mass_data)
-plot(resid(nitrogen_percent_total_lmer) ~ fitted (nitrogen_percent_total_lmer)) # slight horn shape here, need to transform
-summary(nitrogen_percent_total_lmer)
-Anova(nitrogen_percent_total_lmer, test.statistic = 'F')
-cld(emmeans(nitrogen_percent_total_lmer, ~treatment)) # nitrogen mass decreases with salinity treatment
-cld(emmeans(nitrogen_percent_total_lmer, ~species)) # BM has most
-cld(emmeans(nitrogen_percent_total_lmer, ~treatment * species)) # SG and BM least sensitive and have most
+# cn_mass_data = left_join(mass_data, cn_data, by.x = pot, by.y = sample_id)
+# head(cn_mass_data)
+# cn_mass_data$nitrogen_percent_total = (cn_mass_data$nitrogen_percent / 100) * cn_mass_data$mass
+# 
+# nitrogen_percent_total_lmer = lmer(log(nitrogen_percent_total) ~ treatment * species * organ + (1|block), 
+#                         data = cn_mass_data)
+# plot(resid(nitrogen_percent_total_lmer) ~ fitted (nitrogen_percent_total_lmer)) # slight horn shape here, need to transform
+# summary(nitrogen_percent_total_lmer)
+# Anova(nitrogen_percent_total_lmer, test.statistic = 'F')
+# cld(emmeans(nitrogen_percent_total_lmer, ~treatment)) # nitrogen mass decreases with salinity treatment
+# cld(emmeans(nitrogen_percent_total_lmer, ~species)) # BM has most
+# cld(emmeans(nitrogen_percent_total_lmer, ~treatment * species)) # SG and BM least sensitive and have most
 
 ### does increasing salinity influence germination in any of the evaluated species
+
+#### continuous germination data
+
 
 #### check variable class
 class(germination_data$species)
@@ -359,6 +387,11 @@ summarise(germination_data_probs_group, mean_prob_equal_to1 = mean(prob_equal_to
 cld(emmeans(germination_lm, ~treatment_factor, type = "response"))
 cld(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
 
+germination_lm_continuous = glm(germination ~ treatment*species, data = germination_data, family = 'binomial')
+Anova(germination_lm_continuous, test.statistic = 'F')
+test(emtrends(germination_lm_continuous, ~species, var = 'treatment'))
+cld(emtrends(germination_lm_continuous, ~species, var = 'treatment'))
+
 #### calculate change in germination probability for each species
 summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[4, 3] - 
   summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[1, 3]
@@ -370,6 +403,63 @@ summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[8
   summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))[5, 3]
 
 ## make plots
+
+### mass plot (continuous)
+test(emtrends(mass_values_lmer_continuous, ~species, var = 'treatment_continuous'))
+mass_slopes = summary(emtrends(mass_values_lmer_continuous, ~species, var = 'treatment_continuous'))[,c(1,2)]
+mass_intercepts = summary(emmeans(mass_values_lmer_continuous, ~species, 
+                                  at = list(treatment_continuous = 0)))[,c(1,2)]
+mass_trend_BG = exp(mass_intercepts[1,2] + mass_slopes[1,2] * seq(0, 24, 1))
+mass_trend_BM = exp(mass_intercepts[2,2] + mass_slopes[2,2] * seq(0, 24, 1))
+mass_trend_LB = exp(mass_intercepts[3,2] + mass_slopes[3,2] * seq(0, 24, 1))
+mass_trend_SG = exp(mass_intercepts[4,2] + mass_slopes[4,2] * seq(0, 24, 1))
+
+mass_trends = data.frame(seq(0, 24, 1), mass_trend_BG, mass_trend_BM, mass_trend_LB, mass_trend_SG)
+colnames(mass_trends) = c('treatment', 'mass_trend_BG', 'mass_trend_BM', 'mass_trend_LB', 'mass_trend_SG')
+
+mass_plot_continuous = ggplot(data = mass_data, 
+                              aes(x = treatment_continuous, y = mass, 
+                                  colour = species, shape = organ)) +
+  theme(legend.position = 'right', 
+        # legend.justification = c(1, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30),
+        legend.text.align = 0) + # change box of legend
+  scale_colour_manual(values = c('red', 'blue', 'orange', 'purple'), 
+                      name = "Species",
+                      labels=c("BG" = expression(italic("B. gracilis")), 
+                                        "BM" = expression(italic("C. dactylon")),
+                                        "LB" = expression(italic("S. scoparium")), 
+                                        "SG"= expression(italic("B. curtipendula")))) +
+  scale_shape_manual(values = c(17, 15), 
+                     name = "Organ",
+                     labels = c("R" = "Root", "S" = "Shoot")) +
+  geom_jitter(height = 0, width = 1, size = 4, alpha = 0.5) +
+  geom_line(data = mass_trends, aes(x = treatment, y = mass_trend_BG, shape = NULL, colour = NULL), 
+            colour = 'red', size = 4, lty = 1) +
+  geom_line(data = mass_trends, aes(x = treatment, y = mass_trend_BM, shape = NULL, colour = NULL), 
+            colour = 'blue', size = 4, lty = 2) +
+  geom_line(data = mass_trends, aes(x = treatment, y = mass_trend_LB, shape = NULL, colour = NULL), 
+            colour = 'orange', size = 4, lty = 1) +
+  geom_line(data = mass_trends, aes(x = treatment, y = mass_trend_SG, shape = NULL, colour = NULL), 
+            colour = 'purple', size = 4, lty = 1) +
+  ylab('Mass (g)') +
+  xlab('Salinity treatment (dS/m)') +
+  ylim(c(0, 8))
+
+jpeg(filename = "plots/revised/revised2/Figure2.jpeg", width = 8, height = 8, 
+     units = 'in', res = 600)
+plot(mass_plot_continuous)
+dev.off()
 
 ### mass plot
 mass_data$salt_treatment = factor(mass_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
@@ -457,6 +547,124 @@ dev.off()
 # dev.off()
 
 ### percent N plot
+####continuous
+test(emtrends(percent_nitrogen_lmer_continuous, ~species, var = 'treatment_continuous'))
+percent_nitrogen_slopes = summary(emtrends(percent_nitrogen_lmer_continuous, ~species, var = 'treatment_continuous'))[,c(1,2)]
+percent_nitrogen_intercepts = summary(emmeans(percent_nitrogen_lmer_continuous, ~species, 
+                                              at = list(treatment_continuous = 0)))[,c(1,2)]
+percent_nitrogen_trend_BG = exp(percent_nitrogen_intercepts[1,2] + percent_nitrogen_slopes[1,2] * seq(0, 24, 1))
+percent_nitrogen_trend_BM = exp(percent_nitrogen_intercepts[2,2] + percent_nitrogen_slopes[2,2] * seq(0, 24, 1))
+percent_nitrogen_trend_LB = exp(percent_nitrogen_intercepts[3,2] + percent_nitrogen_slopes[3,2] * seq(0, 24, 1))
+percent_nitrogen_trend_SG = exp(percent_nitrogen_intercepts[4,2] + percent_nitrogen_slopes[4,2] * seq(0, 24, 1))
+
+percent_nitrogen_trends = data.frame(seq(0, 24, 1), percent_nitrogen_trend_BG, percent_nitrogen_trend_BM, 
+                                     percent_nitrogen_trend_LB, percent_nitrogen_trend_SG)
+colnames(percent_nitrogen_trends) = c('treatment', 'percent_nitrogen_trend_BG', 'percent_nitrogen_trend_BM', 
+                                      'percent_nitrogen_trend_LB', 'percent_nitrogen_trend_SG')
+
+percent_nitrogen_plot_continuous = ggplot(data = cn_data, 
+                                          aes(x = treatment_continuous, y = nitrogen_percent, 
+                                              colour = species, shape = organ)) +
+  theme(legend.position = 'right', 
+        # legend.justification = c(1, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30),
+        legend.text.align = 0) + # change box of legend
+  scale_colour_manual(values = c('red', 'blue', 'orange', 'purple'), 
+                      name = "Species",
+                      labels=c("BG" = expression(italic("B. gracilis")), 
+                               "BM" = expression(italic("C. dactylon")),
+                               "LB" = expression(italic("S. scoparium")), 
+                               "SG"= expression(italic("B. curtipendula")))) +
+  scale_shape_manual(values = c(17, 15), 
+                     name = "Organ",
+                     labels = c("R" = "Root", "S" = "Shoot")) +
+  geom_jitter(height = 0, width = 1, size = 4, alpha = 0.5) +
+  geom_line(data = percent_nitrogen_trends, aes(x = treatment, y = percent_nitrogen_trend_BG, shape = NULL, colour = NULL), 
+            colour = 'red', size = 4, lty = 1) +
+  geom_line(data = percent_nitrogen_trends, aes(x = treatment, y = percent_nitrogen_trend_BM, shape = NULL, colour = NULL), 
+            colour = 'blue', size = 4, lty = 2) +
+  geom_line(data = percent_nitrogen_trends, aes(x = treatment, y = percent_nitrogen_trend_LB, shape = NULL, colour = NULL), 
+            colour = 'orange', size = 4, lty = 2) +
+  geom_line(data = percent_nitrogen_trends, aes(x = treatment, y = percent_nitrogen_trend_SG, shape = NULL, colour = NULL), 
+            colour = 'purple', size = 4, lty = 1) +
+  ylab('Nitrogen (%)') +
+  xlab('Salinity treatment (dS/m)') +
+  ylim(c(0, 6)) +
+  labs(tag = "A")
+
+test(emtrends(cn_lmer_continuous, ~species, var = 'treatment_continuous'))
+cn_slopes = summary(emtrends(cn_lmer_continuous, ~species, var = 'treatment_continuous'))[,c(1,2)]
+cn_intercepts = summary(emmeans(cn_lmer_continuous, ~species, 
+                                at = list(treatment_continuous = 0)))[,c(1,2)]
+cn_trend_BG = exp(cn_intercepts[1,2] + cn_slopes[1,2] * seq(0, 24, 1))
+cn_trend_BM = exp(cn_intercepts[2,2] + cn_slopes[2,2] * seq(0, 24, 1))
+cn_trend_LB = exp(cn_intercepts[3,2] + cn_slopes[3,2] * seq(0, 24, 1))
+cn_trend_SG = exp(cn_intercepts[4,2] + cn_slopes[4,2] * seq(0, 24, 1))
+
+cn_trends = data.frame(seq(0, 24, 1), cn_trend_BG, cn_trend_BM, 
+                       cn_trend_LB, cn_trend_SG)
+colnames(cn_trends) = c('treatment', 'cn_trend_BG', 'cn_trend_BM', 
+                        'cn_trend_LB', 'cn_trend_SG')
+
+cn_plot_continuous = ggplot(data = cn_data, 
+                            aes(x = treatment_continuous, y = cn, 
+                                colour = species, shape = organ)) +
+  theme(legend.position = 'right', 
+        # legend.justification = c(1, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30),
+        legend.text.align = 0) + # change box of legend
+  scale_colour_manual(values = c('red', 'blue', 'orange', 'purple'), 
+                      name = "Species",
+                      labels=c("BG" = expression(italic("B. gracilis")), 
+                               "BM" = expression(italic("C. dactylon")),
+                               "LB" = expression(italic("S. scoparium")), 
+                               "SG"= expression(italic("B. curtipendula")))) +
+  scale_shape_manual(values = c(17, 15), 
+                     name = "Organ",
+                     labels = c("R" = "Root", "S" = "Shoot")) +
+  geom_jitter(height = 0, width = 1, size = 4, alpha = 0.5) +
+  geom_line(data = cn_trends, aes(x = treatment, y = cn_trend_BG, shape = NULL, colour = NULL), 
+            colour = 'red', size = 4, lty = 1) +
+  geom_line(data = cn_trends, aes(x = treatment, y = cn_trend_BM, shape = NULL, colour = NULL), 
+            colour = 'blue', size = 4, lty = 2) +
+  geom_line(data = cn_trends, aes(x = treatment, y = cn_trend_LB, shape = NULL, colour = NULL), 
+            colour = 'orange', size = 4, lty = 2) +
+  geom_line(data = cn_trends, aes(x = treatment, y = cn_trend_SG, shape = NULL, colour = NULL), 
+            colour = 'purple', size = 4, lty = 1) +
+  ylab('C:N') +
+  xlab('Salinity treatment (dS/m)') +
+  ylim(c(0, 120)) +
+  labs(tag = "B")
+
+jpeg(filename = "plots/revised/revised2/Figure3.jpeg", width = 9, height = 16, 
+     units = 'in', res = 600)
+multiplot(percent_nitrogen_plot_continuous, cn_plot_continuous, cols = 1)
+dev.off()
+
+
+
+
+
 cn_data$salt_treatment = factor(cn_data$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 percent_nitrogen_plot_shoot = ggplot(data = subset(cn_data, organ == 'S'), aes(x = species, y = nitrogen_percent, fill = salt_treatment)) + 
   theme(legend.position = c(0, 1), # change where the legend is
@@ -621,7 +829,104 @@ dev.off()
 # dev.off()
 
 ### germination plot
-germination_probs = summary(emmeans(germination_lm, ~treatment_factor*species, type = "response"))
+Anova(germination_lm_continuous, test.statistic = 'F')
+test(emtrends(germination_lm_continuous, ~species, var = 'treatment', type = 'response'))
+# germination_slopes = summary(emtrends(germination_lm_continuous, ~species, 
+#                                       var = 'treatment', type = 'response'))[,c(1,2)]
+# germination_intercepts = summary(emmeans(germination_lm_continuous, ~species, 
+#                                               at = list(treatment_continuous = 0), type = 'response'))[,c(1,2)]
+# germination_trend_BG = (germination_intercepts[1,2] + germination_slopes[1,2] * seq(0, 24, 1))
+# germination_trend_BM = (germination_intercepts[2,2] + germination_slopes[2,2] * seq(0, 24, 1))
+# germination_trend_LB = (germination_intercepts[3,2] + germination_slopes[3,2] * seq(0, 24, 1))
+# germination_trend_SG = (germination_intercepts[4,2] + germination_slopes[4,2] * seq(0, 24, 1))
+# 
+# germination_trends = data.frame(seq(0, 24, 1), germination_trend_BG, germination_trend_BM, 
+#                                 germination_trend_LB, germination_trend_SG)
+# colnames(germination_trends) = c('treatment', 'germination_trend_BG', 'germination_trend_BM', 
+#                                       'germination_trend_LB', 'germination_trend_SG')
+
+# germination_plot_continuous = ggplot(data = mass_data, 
+#                               aes(x = germination_data, y = germination, 
+#                                   colour = species, shape = organ)) +
+#   theme(legend.position = 'right', 
+#         # legend.justification = c(1, 1), # change where the legend is
+#         legend.text = element_text(size = 16),
+#         legend.title = element_text(size = 16),
+#         axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+#         axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+#         axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+#         axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+#         panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+#         panel.grid.major = element_line(colour = "grey"), # change backgrond color
+#         legend.background = element_blank(), # change background of legend
+#         legend.box.background = element_rect(colour = "black"),
+#         plot.tag = element_text(size = 30),
+#         legend.text.align = 0) + # change box of legend
+#   scale_colour_manual(values = c('red', 'blue', 'orange', 'purple'), 
+#                       name = "Species",
+#                       labels=c("BG" = expression(italic("B. gracilis")), 
+#                                "BM" = expression(italic("C. dactylon")),
+#                                "LB" = expression(italic("S. scoparium")), 
+#                                "SG"= expression(italic("B. curtipendula")))) +
+#   scale_shape_manual(values = c(17, 15), 
+#                      name = "Organ",
+#                      labels = c("R" = "Root", "S" = "Shoot")) +
+#   # geom_jitter(height = 0, width = 1, size = 4, alpha = 0.5) +
+#   geom_line(data = germination_trends, aes(x = treatment, y = germination_trend_BG, shape = NULL, colour = NULL), 
+#             colour = 'red', size = 4, lty = 1) +
+#   geom_line(data = germination_trends, aes(x = treatment, y = germination_trend_BM, shape = NULL, colour = NULL), 
+#             colour = 'blue', size = 4, lty = 2) +
+#   geom_line(data = germination_trends, aes(x = treatment, y = germination_trend_LB, shape = NULL, colour = NULL), 
+#             colour = 'orange', size = 4, lty = 1) +
+#   geom_line(data = germination_trends, aes(x = treatment, y = germination_trend_SG, shape = NULL, colour = NULL), 
+#             colour = 'purple', size = 4, lty = 1) +
+#   ylab('Probability of germination') +
+#   xlab('Salinity treatment (dS/m)') +
+#   ylim(c(0, 1))
+
+germination_plot_continuous = ggplot(data = germination_data, 
+                                     aes(y = germination, x = treatment, colour = species,
+                                         linetype = species)) +
+  theme(legend.position = 'right', 
+        # legend.justification = c(1, 1), # change where the legend is
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        axis.title.y=element_text(size=rel(2), colour = 'black'), # change y axis title properties
+        axis.title.x=element_text(size=rel(2), colour = 'black'), # change x axis title properties
+        axis.text.x=element_text(size=rel(2), colour = 'black'), # change x axis text properties
+        axis.text.y=element_text(size=rel(2), colour = 'black'), # change y axis text properties
+        panel.background = element_rect(fill = 'white', colour = 'black'), # change background panel colors
+        panel.grid.major = element_line(colour = "grey"), # change backgrond color
+        legend.background = element_blank(), # change background of legend
+        legend.box.background = element_rect(colour = "black"),
+        plot.tag = element_text(size = 30),
+        legend.text.align = 0) +
+  scale_colour_manual(values = c('red', 'blue', 'orange', 'purple'), 
+                      name = "Species",
+                      labels=c("BG" = expression(italic("B. gracilis")), 
+                               "BM" = expression(italic("C. dactylon")),
+                               "LB" = expression(italic("S. scoparium")), 
+                               "SG"= expression(italic("B. curtipendula")))) +
+  scale_linetype_manual(values = c(1, 2, 2, 2), guide = 'none') +
+  geom_jitter(height = 0, width = 1, alpha = 0.3, pch = 4, size = 6) +
+  stat_smooth(method="glm", method.args=list(family="binomial"), se=FALSE, lwd = 2) +
+  xlab('Salinity treatment (dS/m)') +
+  ylab('Prob. of germination')
+  
+
+jpeg(filename = "plots/revised/revised2/Figure1.jpeg", width = 10, height = 8, 
+     units = 'in', res = 600)
+plot(germination_plot_continuous)
+dev.off()
+
+
+
+
+
+
+
+
+germination_probs = summary(emmeans(germination_lm, ~treatment*species, type = "response"))
 germination_probs$salt_treatment = factor(germination_probs$treatment, levels = c('0', '8', '16', '24'), ordered = T) 
 germination_plot = ggplot(data = germination_probs, aes(x = species, y = prob, fill = salt_treatment)) + 
   theme(legend.position = 'right', # change where the legend is
